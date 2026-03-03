@@ -106,6 +106,7 @@ export interface Product {
 }
 export interface backendInterface {
     addProduct(name: string, description: string, price: string, imageUrl: string, adminPin: string): Promise<Product>;
+    deleteProduct(productId: bigint, adminPin: string): Promise<boolean>;
     getAllOrders(adminPin: string): Promise<Array<Order>>;
     getProducts(): Promise<Array<Product>>;
     submitOrder(productId: bigint, productName: string, customerName: string, contactNumber: string, timestamp: bigint): Promise<Order>;
@@ -123,6 +124,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.addProduct(arg0, arg1, arg2, arg3, arg4);
+            return result;
+        }
+    }
+    async deleteProduct(arg0: bigint, arg1: string): Promise<boolean> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.deleteProduct(arg0, arg1);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.deleteProduct(arg0, arg1);
             return result;
         }
     }

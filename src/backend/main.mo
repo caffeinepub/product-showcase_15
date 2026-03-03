@@ -3,7 +3,8 @@ import Map "mo:core/Map";
 import Iter "mo:core/Iter";
 import Nat "mo:core/Nat";
 import Runtime "mo:core/Runtime";
-
+import Migration "migration";
+(with migration = Migration.run)
 actor {
   type Product = {
     id : Nat;
@@ -75,5 +76,14 @@ actor {
     products.add(nextProductId, product);
     nextProductId += 1;
     product;
+  };
+
+  public shared ({ caller }) func deleteProduct(productId : Nat, adminPin : Text) : async Bool {
+    if (adminPin != "1234") {
+      Runtime.trap("Invalid PIN");
+    };
+    let exists = products.containsKey(productId);
+    products.remove(productId);
+    exists;
   };
 };

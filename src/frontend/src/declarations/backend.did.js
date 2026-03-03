@@ -30,6 +30,7 @@ export const idlService = IDL.Service({
       [Product],
       [],
     ),
+  'deleteProduct' : IDL.Func([IDL.Nat, IDL.Text], [IDL.Bool], []),
   'getAllOrders' : IDL.Func([IDL.Text], [IDL.Vec(Order)], ['query']),
   'getProducts' : IDL.Func([], [IDL.Vec(Product)], ['query']),
   'submitOrder' : IDL.Func(
@@ -64,6 +65,7 @@ export const idlFactory = ({ IDL }) => {
         [Product],
         [],
       ),
+    'deleteProduct' : IDL.Func([IDL.Nat, IDL.Text], [IDL.Bool], []),
     'getAllOrders' : IDL.Func([IDL.Text], [IDL.Vec(Order)], ['query']),
     'getProducts' : IDL.Func([], [IDL.Vec(Product)], ['query']),
     'submitOrder' : IDL.Func(

@@ -1,33 +1,22 @@
-# Product Showcase & Order Collection
+# Product Showcase
 
 ## Current State
-New project. No existing code.
+A product showcase app with a public homepage displaying products with an "Order Now" button, and an admin page at /admin protected by PIN 1234. The admin page shows all customer orders and allows adding new products. There is no way to delete existing products.
 
 ## Requested Changes (Diff)
 
 ### Add
-- A product catalog page displaying products with name, description, price, and image
-- An "Order Now" button on each product card
-- A modal/dialog that appears when "Order Now" is clicked, asking for the customer's name and contact number
-- A backend to store submitted orders (customer name, phone number, product name, timestamp)
-- An admin view (password-protected) where the shop owner can see all submitted orders with customer details
+- `deleteProduct(productId: Nat, adminPin: Text)` backend function that validates the PIN and removes a product by ID
+- `useDeleteProduct` hook in useQueries.ts for the delete mutation
+- A "Manage Products" section in AdminPage showing all current products with a Delete button per product
 
 ### Modify
-- N/A
+- AdminPage to include a product list with delete buttons after the orders table
 
 ### Remove
-- N/A
+- Nothing removed
 
 ## Implementation Plan
-1. Backend (Motoko):
-   - Data model: Product (id, name, description, price, imageUrl) stored as stable array
-   - Data model: Order (id, productId, productName, customerName, contactNumber, timestamp)
-   - Functions: getProducts, submitOrder, getOrders (admin), addProduct, seedProducts
-   - Simple admin PIN check for getOrders
-
-2. Frontend:
-   - Home/Product listing page with product cards (image, name, description, price, Order Now button)
-   - Order modal with form fields: Full Name, Contact Number, submit button
-   - Success confirmation after order is submitted
-   - Admin page (route /admin) with PIN entry and orders table showing all leads
-   - Sample products pre-loaded for demo purposes
+1. Regenerate backend with deleteProduct function added
+2. Add useDeleteProduct mutation hook to useQueries.ts
+3. Add a "Manage Products" section in AdminPage.tsx that lists all products with a Delete button per row

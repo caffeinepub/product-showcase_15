@@ -27,6 +27,7 @@ export interface Product {
 }
 export interface _SERVICE {
   'addProduct' : ActorMethod<[string, string, string, string, string], Product>,
+  'deleteProduct' : ActorMethod<[bigint, string], boolean>,
   'getAllOrders' : ActorMethod<[string], Array<Order>>,
   'getProducts' : ActorMethod<[], Array<Product>>,
   'submitOrder' : ActorMethod<[bigint, string, string, string, bigint], Order>,

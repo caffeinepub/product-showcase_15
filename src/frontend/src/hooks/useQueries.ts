@@ -84,3 +84,17 @@ export function useAddProduct() {
     },
   });
 }
+
+export function useDeleteProduct() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+  return useMutation<boolean, Error, { productId: bigint; adminPin: string }>({
+    mutationFn: async ({ productId, adminPin }) => {
+      if (!actor) throw new Error("Not connected");
+      return actor.deleteProduct(productId, adminPin);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+    },
+  });
+}

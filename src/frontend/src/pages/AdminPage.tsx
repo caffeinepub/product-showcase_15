@@ -26,11 +26,17 @@ import {
   Plus,
   RefreshCw,
   ShieldCheck,
+  Trash2,
 } from "lucide-react";
 import { motion } from "motion/react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { useAddProduct, useGetAllOrders } from "../hooks/useQueries";
+import {
+  useAddProduct,
+  useDeleteProduct,
+  useGetAllOrders,
+  useGetProducts,
+} from "../hooks/useQueries";
 
 const ADMIN_PIN = "1234";
 
@@ -65,6 +71,30 @@ export function AdminPage() {
   const [addSuccess, setAddSuccess] = useState(false);
 
   const addProductMutation = useAddProduct();
+  const deleteProductMutation = useDeleteProduct();
+  const [deletingIds, setDeletingIds] = useState<Set<string>>(new Set());
+
+  const { data: products, isLoading: productsLoading } = useGetProducts();
+
+  const handleDeleteProduct = async (productId: bigint) => {
+    const key = String(productId);
+    setDeletingIds((prev) => new Set(prev).add(key));
+    try {
+      await deleteProductMutation.mutateAsync({
+        productId,
+        adminPin: verifiedPin,
+      });
+      toast.success("Product deleted.");
+    } catch {
+      toast.error("Failed to delete product.");
+    } finally {
+      setDeletingIds((prev) => {
+        const next = new Set(prev);
+        next.delete(key);
+        return next;
+      });
+    }
+  };
 
   const handlePinSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -322,6 +352,124 @@ export function AdminPage() {
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">
                     Orders will appear here when customers place them.
+                  </p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        <Separator />
+
+        {/* Manage Products */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, delay: 0.15 }}
+        >
+          <Card className="shadow-card border-border">
+            <CardHeader className="border-b border-border pb-4">
+              <div>
+                <CardTitle className="font-display text-lg">
+                  Manage Products
+                </CardTitle>
+                <CardDescription>
+                  {productsLoading
+                    ? "Loading products…"
+                    : `${products?.length ?? 0} product${products?.length === 1 ? "" : "s"} in your shop`}
+                </CardDescription>
+              </div>
+            </CardHeader>
+            <CardContent className="p-0">
+              {productsLoading ? (
+                <div
+                  className="p-6 space-y-3"
+                  data-ocid="admin.products.loading_state"
+                >
+                  {(["a", "b", "c"] as const).map((id) => (
+                    <div key={id} className="flex gap-4">
+                      <Skeleton className="h-4 flex-1" />
+                      <Skeleton className="h-4 flex-1" />
+                      <Skeleton className="h-4 flex-1" />
+                      <Skeleton className="h-4 w-20" />
+                    </div>
+                  ))}
+                </div>
+              ) : products && products.length > 0 ? (
+                <div className="overflow-x-auto">
+                  <Table data-ocid="admin.products_table">
+                    <TableHeader>
+                      <TableRow className="border-border hover:bg-transparent">
+                        <TableHead className="font-semibold text-foreground">
+                          Product Name
+                        </TableHead>
+                        <TableHead className="font-semibold text-foreground">
+                          Price
+                        </TableHead>
+                        <TableHead className="font-semibold text-foreground">
+                          Description
+                        </TableHead>
+                        <TableHead className="font-semibold text-foreground w-24 text-right">
+                          Delete
+                        </TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {products.map((product, index) => {
+                        const isDeleting = deletingIds.has(String(product.id));
+                        return (
+                          <TableRow
+                            key={String(product.id)}
+                            data-ocid={`admin.products.row.${index + 1}`}
+                            className="border-border"
+                          >
+                            <TableCell className="font-medium text-foreground">
+                              {product.name}
+                            </TableCell>
+                            <TableCell className="text-muted-foreground font-mono">
+                              {product.price}
+                            </TableCell>
+                            <TableCell className="text-sm text-muted-foreground max-w-xs truncate">
+                              {product.description}
+                            </TableCell>
+                            <TableCell className="text-right">
+                              <Button
+                                variant="destructive"
+                                size="sm"
+                                data-ocid={`admin.products.delete_button.${index + 1}`}
+                                disabled={isDeleting}
+                                onClick={() => handleDeleteProduct(product.id)}
+                                className="gap-1.5"
+                              >
+                                {isDeleting ? (
+                                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                                ) : (
+                                  <Trash2 className="h-3.5 w-3.5" />
+                                )}
+                                <span className="sr-only sm:not-sr-only">
+                                  Delete
+                                </span>
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </div>
+              ) : (
+                <div
+                  data-ocid="admin.products.empty_state"
+                  className="py-16 text-center"
+                >
+                  <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center mx-auto mb-3">
+                    <Package className="w-5 h-5 text-muted-foreground" />
+                  </div>
+                  <p className="font-medium text-foreground text-sm">
+                    No products yet
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Add products using the form below.
                   </p>
                 </div>
               )}

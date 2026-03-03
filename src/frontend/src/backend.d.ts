@@ -24,6 +24,7 @@ export interface Product {
 }
 export interface backendInterface {
     addProduct(name: string, description: string, price: string, imageUrl: string, adminPin: string): Promise<Product>;
+    deleteProduct(productId: bigint, adminPin: string): Promise<boolean>;
     getAllOrders(adminPin: string): Promise<Array<Order>>;
     getProducts(): Promise<Array<Product>>;
     submitOrder(productId: bigint, productName: string, customerName: string, contactNumber: string, timestamp: bigint): Promise<Order>;
