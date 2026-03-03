@@ -1,0 +1,109 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Fonts ──────────────────────────────────────────────────── */
+@font-face {
+  font-family: "Fraunces";
+  src: url("/assets/fonts/Fraunces.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Satoshi";
+  src: url("/assets/fonts/Satoshi.woff2") format("woff2");
+  font-weight: 300 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ─── Design Tokens ──────────────────────────────────────────── */
+@layer base {
+  :root {
+    --radius: 0.75rem;
+
+    /* Cream / Warm Off-White Background */
+    --background: 0.97 0.015 85;
+    --foreground: 0.2 0.04 45;
+
+    /* Card: slightly warmer white */
+    --card: 0.99 0.008 80;
+    --card-foreground: 0.2 0.04 45;
+
+    /* Popover */
+    --popover: 0.99 0.008 80;
+    --popover-foreground: 0.2 0.04 45;
+
+    /* Primary: rich terracotta */
+    --primary: 0.52 0.16 40;
+    --primary-foreground: 0.99 0.005 80;
+
+    /* Secondary: warm sand */
+    --secondary: 0.92 0.025 75;
+    --secondary-foreground: 0.28 0.05 45;
+
+    /* Muted: soft warm grey */
+    --muted: 0.94 0.015 80;
+    --muted-foreground: 0.5 0.03 55;
+
+    /* Accent: deep amber */
+    --accent: 0.75 0.12 60;
+    --accent-foreground: 0.15 0.04 45;
+
+    /* Destructive */
+    --destructive: 0.56 0.2 25;
+    --destructive-foreground: 0.99 0.005 80;
+
+    /* Border / Input */
+    --border: 0.87 0.025 75;
+    --input: 0.87 0.025 75;
+    --ring: 0.52 0.16 40;
+
+    /* Charts */
+    --chart-1: 0.52 0.16 40;
+    --chart-2: 0.65 0.14 60;
+    --chart-3: 0.75 0.12 75;
+    --chart-4: 0.4 0.1 30;
+    --chart-5: 0.85 0.1 85;
+
+    /* Sidebar */
+    --sidebar: 0.94 0.02 75;
+    --sidebar-foreground: 0.2 0.04 45;
+    --sidebar-primary: 0.52 0.16 40;
+    --sidebar-primary-foreground: 0.99 0.005 80;
+    --sidebar-accent: 0.88 0.03 75;
+    --sidebar-accent-foreground: 0.2 0.04 45;
+    --sidebar-border: 0.87 0.025 75;
+    --sidebar-ring: 0.52 0.16 40;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
+  }
+}
+
+/* ─── Custom Utilities ───────────────────────────────────────── */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .grain-overlay::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    border-radius: inherit;
+  }
+}
